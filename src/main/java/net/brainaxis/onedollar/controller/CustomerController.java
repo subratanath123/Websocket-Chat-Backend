@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController("customer")
 @RequestMapping("customer")
-@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "http://localhost:3000" }, allowCredentials = "true", allowedHeaders = "*")
 public class CustomerController {
 
     private final Logger logger = LoggerFactory.getLogger(CustomerController.class);

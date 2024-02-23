@@ -24,7 +24,7 @@ import java.util.*;
 
 @RestController("aboutus")
 @RequestMapping("/aboutus")
-@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "http://localhost:3000" }, allowCredentials = "true", allowedHeaders = "*")
 public class AboutUsController {
 
     private final Logger logger = LoggerFactory.getLogger(AboutUsController.class);
