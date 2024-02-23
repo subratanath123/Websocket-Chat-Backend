@@ -2,7 +2,9 @@ package net.brainaxis.onedollar.controller;
 
 
 import net.brainaxis.onedollar.entity.banner.Banner;
+import net.brainaxis.onedollar.entity.banner.BannerCategory;
 import net.brainaxis.onedollar.entity.banner.BannerPhoto;
+import net.brainaxis.onedollar.entity.review.ReviewPhoto;
 import org.bson.types.Binary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +32,7 @@ import static net.brainaxis.onedollar.entity.banner.BannerCategory.VipOffer;
 
 @RestController("banner")
 @RequestMapping("/banner")
-@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "http://localhost:3000" }, allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "http://localhost:3000"}, allowCredentials = "true", allowedHeaders = "*")
 public class BannerController {
 
     private final Logger logger = LoggerFactory.getLogger(BannerController.class);
@@ -125,9 +128,45 @@ public class BannerController {
     @GetMapping("/list")
     public List<Banner> showBannerList() {
         logger.info("Banner:  fetching all banners");
-
-
         return mongoTemplate.findAll(Banner.class);
+    }
+
+    @GetMapping("/offerList/{bannerCategory}")
+    public List<Banner> showVipOfferDetailedList(@PathVariable BannerCategory bannerCategory) {
+        logger.info("Banner:  fetching all vip offer banners with details");
+
+        Query bannerQuery = new Query()
+                .addCriteria(
+                        Criteria
+                                .where("deleted")
+                                .is(false)
+                                .and("bannerCategory")
+                                .is(bannerCategory)
+                );
+
+        List<Banner> bannerList = mongoTemplate.find(bannerQuery, Banner.class);
+
+        return bannerList
+                .stream()
+                .peek(banner -> {
+                    Query query = new Query()
+                            .addCriteria(
+                                    Criteria
+                                            .where("banner._id")
+                                            .is(banner.getId())
+                            );
+
+                    query.fields().include("id");
+
+                    banner.setBannerPhotoIdList(
+                            mongoTemplate.find(query, BannerPhoto.class)
+                                    .stream()
+                                    .map(BannerPhoto::getId)
+                                    .toList()
+                    );
+                })
+                .toList();
+
     }
 
     @GetMapping("/vipOffer/list")

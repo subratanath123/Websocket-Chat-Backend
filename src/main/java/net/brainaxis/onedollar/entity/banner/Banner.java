@@ -32,7 +32,10 @@ public class Banner implements Serializable {
 
     private String validityFrom;
     private String validityTo;
+
     private String bannerDetails;
+    private String bannerSubtitle;
+
     @Field
     private BannerCategory bannerCategory;
 
