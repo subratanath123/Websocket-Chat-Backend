@@ -24,7 +24,7 @@ import java.util.*;
 
 @RestController("theme")
 @RequestMapping("/theme")
-@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "http://localhost:3000" }, allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "https://one-dollar-customer-frontend.vercel.app/", "http://localhost:3000"}, allowCredentials = "true", allowedHeaders = "*")
 public class ThemeController {
 
     private final Logger logger = LoggerFactory.getLogger(ThemeController.class);
@@ -86,6 +86,56 @@ public class ThemeController {
         saveThemePhoto(theme);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/image")
+    public ResponseEntity<InputStreamResource> downloadLatestImage() {
+        logger.info("theme:  fetching latest theme image");
+
+        Theme theme = Optional.of(mongoTemplate.findAll(Theme.class))
+                .orElse(new ArrayList<>())
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        String photoId =null;
+
+        if (theme != null) {
+            logger.info("Theme:  showing Theme with id = {}", theme.getId());
+
+            Query query = new Query()
+                    .addCriteria(
+                            Criteria.where("theme._id")
+                                    .is(theme.getId())
+                                    .and("deleted")
+                                    .in(Arrays.asList(null, false))
+                    );
+
+            query.fields().include("id");
+
+            photoId = mongoTemplate.find(query, ThemePhoto.class)
+                    .stream()
+                    .map(ThemePhoto::getId)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+
+        if (photoId != null) {
+            ThemePhoto themePhoto = mongoTemplate.findById(photoId, ThemePhoto.class);
+            headers.setContentDispositionFormData("attachment", themePhoto.getFileName());
+
+            InputStreamResource inputStreamResource = new InputStreamResource(new ByteArrayInputStream(themePhoto.getPhoto().getData()));
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(inputStreamResource);
+        }
+
+        return  ResponseEntity.ok()
+                .headers(headers)
+                .body(null);
     }
 
     @GetMapping("/image/{id}")

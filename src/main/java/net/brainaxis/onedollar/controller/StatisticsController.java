@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController("statistics")
 @RequestMapping("/statistics")
-@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "http://localhost:3000" }, allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "https://one-dollar-customer-frontend.vercel.app/", "http://localhost:3000" }, allowCredentials = "true", allowedHeaders = "*")
 public class StatisticsController {
 
     private final Logger logger = LoggerFactory.getLogger(StatisticsController.class);

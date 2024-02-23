@@ -32,7 +32,7 @@ import static net.brainaxis.onedollar.entity.banner.BannerCategory.VipOffer;
 
 @RestController("banner")
 @RequestMapping("/banner")
-@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "http://localhost:3000"}, allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://react-next-js-with-type-script-admin.vercel.app/", "https://one-dollar-customer-frontend.vercel.app/", "http://localhost:3000"}, allowCredentials = "true", allowedHeaders = "*")
 public class BannerController {
 
     private final Logger logger = LoggerFactory.getLogger(BannerController.class);
@@ -47,7 +47,7 @@ public class BannerController {
         Banner banner = mongoTemplate.findById(id, Banner.class);
 
         Query query = new Query()
-                .addCriteria(Criteria.where("banner._id").is(id).and("deleted").in(Arrays.asList(null, false)));
+                .addCriteria(Criteria.where("banner._id").is(id).and("deleted").in(Arrays.asList(false)));
 
         query.fields().include("id");
 
