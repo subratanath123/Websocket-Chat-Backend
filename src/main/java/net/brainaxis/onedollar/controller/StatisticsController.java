@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController("statistics")
 @RequestMapping("/statistics")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
 public class StatisticsController {
 
     private final Logger logger = LoggerFactory.getLogger(StatisticsController.class);

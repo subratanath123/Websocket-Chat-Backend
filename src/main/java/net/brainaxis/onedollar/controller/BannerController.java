@@ -29,7 +29,7 @@ import static net.brainaxis.onedollar.entity.banner.BannerCategory.VipOffer;
 
 @RestController("banner")
 @RequestMapping("/banner")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
 public class BannerController {
 
     private final Logger logger = LoggerFactory.getLogger(BannerController.class);

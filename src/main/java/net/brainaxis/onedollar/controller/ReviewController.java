@@ -27,7 +27,7 @@ import java.util.*;
 
 @RestController("review")
 @RequestMapping("/review")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
 public class ReviewController {
 
     private final Logger logger = LoggerFactory.getLogger(ReviewController.class);

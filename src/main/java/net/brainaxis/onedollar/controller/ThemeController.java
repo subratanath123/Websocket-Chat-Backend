@@ -24,7 +24,7 @@ import java.util.*;
 
 @RestController("theme")
 @RequestMapping("/theme")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
 public class ThemeController {
 
     private final Logger logger = LoggerFactory.getLogger(ThemeController.class);

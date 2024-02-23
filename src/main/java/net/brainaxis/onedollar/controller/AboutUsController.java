@@ -24,7 +24,7 @@ import java.util.*;
 
 @RestController("aboutus")
 @RequestMapping("/aboutus")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*")
 public class AboutUsController {
 
     private final Logger logger = LoggerFactory.getLogger(AboutUsController.class);
