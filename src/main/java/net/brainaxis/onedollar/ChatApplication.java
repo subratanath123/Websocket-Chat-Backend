@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @EnableWebMvc
 @SpringBootApplication
-public class OneDollarCustomerApplication {
+public class ChatApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OneDollarCustomerApplication.class, args);
+		SpringApplication.run(ChatApplication.class, args);
 	}
 
 }
