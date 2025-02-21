@@ -59,13 +59,17 @@ public class WebSocketController {
         //Sending other users/chabots message to self chatbox
         if (userEmail.equals("chatbot")) {
 
-            simpMessagingTemplate.convertAndSend("/queue/reply-" + chatMessage.getSenderEmail(), ChatMessage
+            ChatMessage botReplayMessage = ChatMessage
                     .builder()
                     .content(openAiService.chat(chatMessage.getContent()).getChoices().get(0).getMessage().getContent())
                     .senderEmail(userEmail)
                     .created(new Date())
-                    .build()
+                    .build();
+
+            simpMessagingTemplate.convertAndSend("/queue/reply-" + chatMessage.getSenderEmail(), botReplayMessage
             );
+
+            chatDao.saveChatHistory(chatHistoryId, botReplayMessage);
 
         } else {
             simpMessagingTemplate.convertAndSend("/queue/reply-" + userEmail, chatMessage);

@@ -1,9 +1,14 @@
 package net.ai.chatbot.config;
 
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.openai.OpenAiEmbeddingModel;
+import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+
+//https://docs.spring.io/spring-ai/reference/api/vectordbs/pinecone.html
 
 @Configuration
 public class OpenAiConfiguration {
@@ -29,6 +34,12 @@ public class OpenAiConfiguration {
                 });
 
         return restTemplate;
+    }
+
+
+    @Bean
+    public EmbeddingModel embeddingModel() {
+        return new OpenAiEmbeddingModel( OpenAiApi.builder().apiKey(apiKey).build());
     }
 
 }

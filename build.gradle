@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
+	id("org.springframework.boot") version '3.2.0'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -13,9 +13,30 @@ java {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+}
+
+ext {
+	set('springCloudVersion', "2023.0.0")
+}
+
+repositories {
+	mavenCentral()
+
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+	implementation 'org.springframework.ai:spring-ai-pinecone-store'
+
+
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -24,6 +45,15 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'software.amazon.awssdk:s3:2.20.157'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT"
+	}
 }
 
 tasks.named('test') {
