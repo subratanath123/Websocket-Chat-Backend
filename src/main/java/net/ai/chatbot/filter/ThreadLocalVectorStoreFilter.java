@@ -5,11 +5,9 @@ import net.ai.chatbot.config.PineconeConfig;
 import net.ai.chatbot.service.ThreadLocalVectorStoreHolder;
 import net.ai.chatbot.utils.AuthUtils;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
 public class ThreadLocalVectorStoreFilter implements Filter {
 
     private final EmbeddingModel embeddingModel;
