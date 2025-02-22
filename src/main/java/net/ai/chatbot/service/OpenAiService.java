@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.ai.chatbot.dto.ChatRequest;
 import net.ai.chatbot.dto.ChatResponse;
 import net.ai.chatbot.dto.Message;
+import org.springframework.ai.document.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,20 +32,26 @@ public class OpenAiService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-    public ChatResponse chat(String prompt) {
+    public ChatResponse chat(String prompt, List<Document> knowledgeBaseResults) {
         /* Initialize variables */
         ChatResponse chatResponse = null;
-        List<Message> ChatMessages = new ArrayList<>();
+        List<Message> chatMessages = new ArrayList<>();
 
         ChatRequest.ChatRequestBuilder request = ChatRequest.builder();
         try {
             /* Add user prompt to chat messages */
-            ChatMessages.add(new Message("user", prompt));
+            chatMessages.add(new Message("user", prompt));
+            chatMessages.add(new Message("system", "You are a helpful AI assistant. Use the following knowledge base to answer the query."));
+
+            // Add knowledge base results to chat messages
+            for (Document doc : knowledgeBaseResults) {
+                chatMessages.add(new Message("system", "Knowledge Base:".concat(doc.getText())));
+            }
 
             /* Build chat request */
             request
                     .model(model)
-                    .messages(ChatMessages)
+                    .messages(chatMessages)
                     .n(maxCompletions)
                     .temperature(temperature);
 

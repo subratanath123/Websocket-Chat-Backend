@@ -1,9 +1,15 @@
 package net.ai.chatbot.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.ai.chatbot.config.PineconeConfig;
 import net.ai.chatbot.dao.ChatDao;
 import net.ai.chatbot.dto.ChatMessage;
 import net.ai.chatbot.service.OpenAiService;
+import net.ai.chatbot.service.ThreadLocalVectorStoreHolder;
+import net.ai.chatbot.utils.AuthUtils;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -11,6 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -24,6 +31,16 @@ public class WebSocketController {
 
     @Autowired
     private OpenAiService openAiService;
+
+    @Autowired
+    private ThreadLocalVectorStoreHolder threadLocalVectorStoreHolder;
+
+    @Autowired
+    private PineconeConfig pineconeConfig;
+
+    @Autowired
+    private EmbeddingModel embeddingModel;
+
 
     @MessageMapping("/chat.register")
     @SendTo("/topic/public")
@@ -59,9 +76,16 @@ public class WebSocketController {
         //Sending other users/chabots message to self chatbox
         if (userEmail.equals("chatbot")) {
 
+            threadLocalVectorStoreHolder.set(pineconeConfig.pineconeVectorStore(embeddingModel, chatMessage.getSenderEmail()));
+
+            List<Document> knowledgeBaseResults = threadLocalVectorStoreHolder.get().similaritySearch(SearchRequest.builder()
+                    .query(chatMessage.getContent())
+                    .topK(10)
+                    .build());
+
             ChatMessage botReplayMessage = ChatMessage
                     .builder()
-                    .content(openAiService.chat(chatMessage.getContent()).getChoices().get(0).getMessage().getContent())
+                    .content(openAiService.chat(chatMessage.getContent(), knowledgeBaseResults).getChoices().get(0).getMessage().getContent())
                     .senderEmail(userEmail)
                     .created(new Date())
                     .build();
